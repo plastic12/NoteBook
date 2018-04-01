@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.view.MainSceneController">
+   <children>
+      <VBox prefHeight="800.0" prefWidth="1200.0">
+         <children>
+            <MenuBar>
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#open" text="Open" />
+                        <MenuItem mnemonicParsing="false" onAction="#close" text="Close" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Book">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#next" text="next" />
+                        <MenuItem mnemonicParsing="false" onAction="#previous" text="previous" />
+                        <MenuItem mnemonicParsing="false" onAction="#remove" text="remove" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="About" />
+                  </items>
+                </Menu>
+                  <Menu fx:id="menu" mnemonicParsing="false" text="Page: " />
+              </menus>
+            </MenuBar>
+            <ScrollPane prefHeight="800.0" prefWidth="1200.0">
+              <content>
+                <AnchorPane fx:id="pane" minHeight="0.0" minWidth="0.0" prefHeight="500.0" prefWidth="500.0" />
+              </content>
+            </ScrollPane>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
