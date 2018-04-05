@@ -37,6 +37,10 @@ public class MainSceneController
 	private WritableImage image;
 
 	private boolean erase=false;
+	
+	private boolean drag=false;
+	
+	private int x,y;
 
 
 
@@ -84,6 +88,65 @@ public class MainSceneController
 				int alterY=y+j;
 				if(alterX>=0&&alterX<book.getWidth()&&alterY>=0&&alterY<book.getHeight())
 					writer.setColor(alterX, alterY, Color.BLACK);
+			}
+		}
+	}
+	public void drawStroke(int x1,int y1,int x2,int y2)
+	{
+		PixelWriter writer=image.getPixelWriter();
+		if(x1==x2)
+		{
+			int minY,maxY;
+			if(y1>y2)
+			{
+				minY=y1;maxY=y2;
+			}
+			else
+			{
+				minY=y2;maxY=y1;
+			}
+			for(int i=0;i<=maxY-minY;i++)
+			{
+				writer.setColor(x1, minY+i, Color.BLACK);
+			}
+		}
+		else
+		{
+			double slope=(y1-y2)/(x1-x2);
+			if(Math.abs(x1-x2)>Math.abs(y1-y2))
+			{
+				int minX,maxX,originY;
+				if(x1>x2)
+				{
+					minX=x2;maxX=x1;originY=y2;
+				}
+				else
+				{
+					minX=x1;maxX=x2;originY=y1;
+				}
+				for(int i=0;i<=maxX-minX;i++)
+				{
+					double centerY=originY+slope*i;
+					writer.setColor(minX+i,(int) Math.floor(centerY),Color.BLACK);
+				}
+			}
+			else
+			{
+				double qSlope=1/slope;
+				int minY,maxY,originX;
+				if(y1>y2)
+				{
+					minY=y2;maxY=y1;originX=x2;
+				}
+				else
+				{
+					minY=y1;maxY=y2;originX=x1;
+				}
+				for(int i=0;i<=maxY-minY;i++)
+				{
+					double centerX=originX+qSlope*i;
+					writer.setColor((int) Math.floor(centerX),minY+i,Color.BLACK);
+				}
 			}
 		}
 	}
@@ -149,6 +212,7 @@ public class MainSceneController
 				break;
 			}
 		});
+		/*
 		pane.setOnMouseDragged(e->{
 			if(book!=null)
 			{
@@ -162,6 +226,54 @@ public class MainSceneController
 				}
 			}
 		});
+		*/
+		pane.setOnMousePressed(e->{
+			if(book!=null)
+			{
+				if(!erase)
+				{
+					drag=true;
+					x=(int) e.getX();
+					y=(int) e.getY();
+				}
+				else
+				{
+					clear((int)e.getX(),(int)e.getY());
+				}
+			}
+		});
+		pane.setOnMouseClicked(e->
+		{
+			if(book!=null)
+			{
+				if(!erase)
+				{
+					PixelWriter writer=image.getPixelWriter();
+					writer.setColor((int)e.getX(),(int)e.getY(), Color.BLACK);
+				
+				}
+			}
+		});
+		pane.setOnMouseDragged(e->{
+			if(book!=null)
+			{
+				if(!erase)
+				{
+					if(drag)
+					{
+						drawStroke(x,y,(int)e.getX(),(int)e.getY());
+						x=(int) e.getX();
+						y=(int) e.getY();
+					}
+				}
+				else
+				{
+					clear((int)e.getX(),(int)e.getY());
+				}
+			}
+		});
+		pane.setOnMouseReleased(e->{
+			drag=false;});
 		setCursor();
 		/*
 		pane.setOnMouseClicked(e->{
