@@ -99,11 +99,11 @@ public class MainSceneController
 			int minY,maxY;
 			if(y1>y2)
 			{
-				minY=y1;maxY=y2;
+				minY=y2;maxY=y1;
 			}
 			else
 			{
-				minY=y2;maxY=y1;
+				minY=y1;maxY=y2;
 			}
 			for(int i=0;i<=maxY-minY;i++)
 			{
@@ -150,7 +150,7 @@ public class MainSceneController
 			}
 		}
 	}
-	public void clear(int x,int y)
+	public void rubber(int x,int y)
 	{
 		PixelWriter writer=image.getPixelWriter();
 		for(int i=-10;i<11;i++)
@@ -164,6 +164,12 @@ public class MainSceneController
 			}
 
 		}
+	}
+	@FXML
+	public void clear()
+	{
+		image=new WritableImage(book.getWidth(),book.getHeight());
+		iv.setImage(image);
 	}
 	public void toggleErase()
 	{
@@ -238,7 +244,7 @@ public class MainSceneController
 				}
 				else
 				{
-					clear((int)e.getX(),(int)e.getY());
+					rubber((int)e.getX(),(int)e.getY());
 				}
 			}
 		});
@@ -268,7 +274,7 @@ public class MainSceneController
 				}
 				else
 				{
-					clear((int)e.getX(),(int)e.getY());
+					rubber((int)e.getX(),(int)e.getY());
 				}
 			}
 		});
