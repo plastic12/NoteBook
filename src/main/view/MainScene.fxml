@@ -26,9 +26,9 @@
                         <MenuItem mnemonicParsing="false" onAction="#remove" text="remove" />
                   </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Help">
+                <Menu mnemonicParsing="false" text="Quickdraw">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="About" />
+                    <MenuItem mnemonicParsing="false" onAction="#quickDraw" text="set1" />
                   </items>
                 </Menu>
                   <Menu fx:id="menu" mnemonicParsing="false" text="Page: " />

@@ -66,6 +66,7 @@ public class MainSceneController
 			iv.setSmooth(true);
 			iv.setCache(true);
 			pane.getChildren().add(iv);
+			setShowPage();
 		}
 	}
 	public void setImage()
@@ -169,6 +170,14 @@ public class MainSceneController
 	public void clear()
 	{
 		image=new WritableImage(book.getWidth(),book.getHeight());
+		PixelWriter writer=image.getPixelWriter();
+		for(int i=0;i<book.getWidth();i++)
+		{
+			for(int j=0;j<book.getHeight();j++)
+			{
+				writer.setColor(i, j, Color.WHITE);
+			}
+		}
 		iv.setImage(image);
 	}
 	public void toggleErase()
@@ -195,6 +204,11 @@ public class MainSceneController
 	{
 		book=null;
 		iv = new ImageView();
+	}
+	@FXML
+	public void quickDraw()
+	{
+		drawStroke(book.getWidth()/2,0,book.getWidth()/2,book.getHeight());
 	}
 	public void initEvent()
 	{
