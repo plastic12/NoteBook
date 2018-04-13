@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
+import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -18,6 +19,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import main.TestMain;
@@ -29,6 +31,8 @@ public class MainSceneController
 	private Pane pane;
 	@FXML
 	private Menu menu;
+	@FXML
+	private Menu colorMenu;
 
 	private Book book;
 
@@ -39,6 +43,8 @@ public class MainSceneController
 	private boolean erase=false;
 	
 	private boolean drag=false;
+	
+	private Color paintColor=Color.BLACK;
 	
 	private int x,y;
 
@@ -108,7 +114,7 @@ public class MainSceneController
 			}
 			for(int i=0;i<=maxY-minY;i++)
 			{
-				writer.setColor(x1, minY+i, Color.BLACK);
+				writer.setColor(x1, minY+i, paintColor);
 			}
 		}
 		else
@@ -128,7 +134,7 @@ public class MainSceneController
 				for(int i=0;i<=maxX-minX;i++)
 				{
 					double centerY=originY+slope*i;
-					writer.setColor(minX+i,(int) Math.floor(centerY),Color.BLACK);
+					writer.setColor(minX+i,(int) Math.floor(centerY),paintColor);
 				}
 			}
 			else
@@ -146,7 +152,7 @@ public class MainSceneController
 				for(int i=0;i<=maxY-minY;i++)
 				{
 					double centerX=originX+qSlope*i;
-					writer.setColor((int) Math.floor(centerX),minY+i,Color.BLACK);
+					writer.setColor((int) Math.floor(centerX),minY+i,paintColor);
 				}
 			}
 		}
@@ -202,7 +208,7 @@ public class MainSceneController
 	}
 	public void initialize()
 	{
-		book=null;
+		book = null;
 		iv = new ImageView();
 	}
 	@FXML
@@ -232,21 +238,6 @@ public class MainSceneController
 				break;
 			}
 		});
-		/*
-		pane.setOnMouseDragged(e->{
-			if(book!=null)
-			{
-				if(!erase)
-				{
-					write((int)e.getX(),(int)e.getY());
-				}
-				else
-				{
-					clear((int)e.getX(),(int)e.getY());
-				}
-			}
-		});
-		*/
 		pane.setOnMousePressed(e->{
 			if(book!=null)
 			{
@@ -295,15 +286,15 @@ public class MainSceneController
 		pane.setOnMouseReleased(e->{
 			drag=false;});
 		setCursor();
-		/*
-		pane.setOnMouseClicked(e->{
-			if(book!=null)
-			{
-				write((int)e.getX(),(int)e.getY());
-			}
-		});
-		 */
-
+		colorMenu.getItems().add(new ColorOption(Color.RED));
+		colorMenu.getItems().add(new ColorOption(Color.ORANGE));
+		colorMenu.getItems().add(new ColorOption(Color.YELLOW));
+		colorMenu.getItems().add(new ColorOption(Color.GREEN));
+		colorMenu.getItems().add(new ColorOption(Color.BLUE));
+		colorMenu.getItems().add(new ColorOption(Color.INDIGO));
+		colorMenu.getItems().add(new ColorOption(Color.web("9400B3")));
+		colorMenu.getItems().add(new ColorOption(Color.BLACK));
+		
 
 	}
 	@FXML
@@ -363,5 +354,17 @@ public class MainSceneController
 		if(file==null)
 			return null;
 		return file.getAbsolutePath();
+	}
+	public class ColorOption extends CustomMenuItem
+	{
+		private Rectangle rectangle;
+		public ColorOption(Color color)
+		{
+			rectangle=new Rectangle(20,20,color);
+			this.setContent(rectangle);
+			this.setOnAction((e)->{
+				paintColor=color;
+			});
+		}
 	}
 }

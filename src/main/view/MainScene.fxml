@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
 <?import javafx.scene.image.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
@@ -31,6 +32,7 @@
                     <MenuItem mnemonicParsing="false" onAction="#quickDraw" text="set1" />
                   </items>
                 </Menu>
+                  <Menu fx:id="colorMenu" mnemonicParsing="false" text="Color" />
                   <Menu fx:id="menu" mnemonicParsing="false" text="Page: " />
               </menus>
             </MenuBar>
