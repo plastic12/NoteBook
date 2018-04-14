@@ -346,6 +346,13 @@ public class MainSceneController
 		setImage();
 		setShowPage();
 	}
+	@FXML
+	public void addPage()
+	{
+		book.add();
+		setImage();
+		setShowPage();
+	}
 	public static String select()
 	{
 		Stage stage=new Stage();

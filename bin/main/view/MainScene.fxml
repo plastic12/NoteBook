@@ -28,6 +28,7 @@
                               <MenuItem mnemonicParsing="false" onAction="#previous" text="previous" />
                               <MenuItem mnemonicParsing="false" onAction="#clear" text="clear" />
                               <MenuItem mnemonicParsing="false" onAction="#remove" text="remove" />
+                              <MenuItem mnemonicParsing="false" onAction="#addPage" text="addPage" />
                            </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Quickdraw">

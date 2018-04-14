@@ -52,22 +52,30 @@ public class Book
 		this.filename=filename;
 		index=1;
 		if(!hasPage())
-			generatePage();
+			generatePage(index);
 	}
 	public static void main(String[] args)
 	{
 		Book book=new Book("book.txt");
 	}
-	/*
-	public void insert()
+	public void add()
 	{
-		
+		add(index);
 	}
-	public void insert()
+	public void add(int index)
 	{
-		
+		if(index<1||index>current)
+			return;
+		else
+		{
+			for(int i=current;i>=index;i--)
+			{
+				File tempfile=new File(getFile(i));
+				tempfile.renameTo(new File(getFile(i+1)));
+			}
+			generatePage(index);
+		}
 	}
-	*/
 	public void remove()
 	{
 		remove(index);
@@ -102,14 +110,14 @@ public class Book
 		File file=new File(getFile());
 		return file.exists();
 	}
-	private void generatePage()
+	private void generatePage(int index)
 	{
 		BufferedImage output=new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
 		Graphics2D gr=output.createGraphics();
 		gr.setColor(Color.white);
 		gr.fillRect(0, 0, width, height);
         try {
-			ImageIO.write(output, "png", new File(getFile()));
+			ImageIO.write(output, "png", new File(getFile(index)));
 			setCurrent(current+1);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -155,7 +163,7 @@ public class Book
 		{
 			index++;
 			if(!hasPage())
-				generatePage();
+				generatePage(index);
 			return true;
 		}
 	}
@@ -166,8 +174,6 @@ public class Book
 		else
 		{
 			index--;
-			if(!hasPage())
-				generatePage();
 			return true;
 		}
 		
