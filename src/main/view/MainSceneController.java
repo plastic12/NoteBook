@@ -211,6 +211,11 @@ public class MainSceneController
 		book = null;
 		iv = new ImageView();
 	}
+	public void setColor(Color color)
+	{
+		paintColor=color;
+	}
+	public Color getColor() {return paintColor;}
 	@FXML
 	public void quickDraw()
 	{

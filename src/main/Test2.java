@@ -21,8 +21,9 @@ public class Test2
 {
 	public static void main(String[] args) throws IOException
 	{
+		colortoString();
 		//drawImage();
-		fileConvert();
+		//fileConvert();
 		/*
 		Font font = new Font("TimesRoman", Font.BOLD, 20);
 		gr.setFont(font);
@@ -92,8 +93,13 @@ public class Test2
 			ImageIO.write(output, "png", new File("while.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-		
+		}	
+	}
+	public static void colortoString()
+	{
+		System.out.println(Color.RED);
+		Color color=Color.web(Color.RED.toString());
+		System.out.println(color);
 	}
 
 }
