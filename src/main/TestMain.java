@@ -44,6 +44,7 @@ public class TestMain extends Application {
 	    primaryStage.setOnCloseRequest((e)->
 	    {
 	    		writeSetting(controller.getColor());
+	    		controller.saveImage();
 	    });
 	} catch (IOException e) {
 		// TODO Auto-generated catch block

@@ -20,6 +20,7 @@
                            <items>
                               <MenuItem mnemonicParsing="false" onAction="#open" text="Open" />
                               <MenuItem mnemonicParsing="false" onAction="#close" text="Close" />
+                              <MenuItem mnemonicParsing="false" onAction="#saveImage" text="Save" />
                            </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Book">

@@ -82,7 +82,8 @@ public class MainSceneController
 	}
 	public void saveImage()
 	{
-		book.saveImage(SwingFXUtils.fromFXImage(image, null));
+		if(book!=null)
+			book.saveImage(SwingFXUtils.fromFXImage(image, null));
 	}
 	public void write(int x,int y)
 	{
