@@ -41,11 +41,11 @@ public class MainSceneController
 	private WritableImage image;
 
 	private boolean erase=false;
-	
+
 	private boolean drag=false;
-	
+
 	private Color paintColor=Color.BLACK;
-	
+
 	private int x,y;
 
 
@@ -60,24 +60,12 @@ public class MainSceneController
 		book=new Book(filename);
 		pane.setPrefWidth(book.getWidth());
 		pane.setPrefHeight(book.getHeight());
-		Path p=Paths.get(book.getFile());
-		System.out.println(p.toAbsolutePath().toString());
-		if(!Files.exists(p))
-			System.out.println("Image source is corrupted");
-		else
-		{
-			setImage();
-			iv.setImage(image);
-			iv.setPreserveRatio(true);
-			iv.setSmooth(true);
-			iv.setCache(true);
-			pane.getChildren().add(iv);
-			setShowPage();
-		}
+		setImage();
+		setShowPage();
 	}
 	public void setImage()
 	{
-		image=new WritableImage(new Image(new File(book.getFile()).toURI().toString()).getPixelReader(),book.getWidth(),book.getHeight());
+		image=new WritableImage(book.getImage().getPixelReader(),book.getWidth(),book.getHeight());
 		iv.setImage(image);
 	}
 	public void saveImage()
@@ -203,14 +191,18 @@ public class MainSceneController
 	public void close()
 	{
 		saveImage();
+		book.saveSetting();
 		System.out.println("close");
 		book=null;
-
 	}
 	public void initialize()
 	{
 		book = null;
 		iv = new ImageView();
+		iv.setPreserveRatio(true);
+		iv.setSmooth(true);
+		iv.setCache(true);
+		pane.getChildren().add(iv);
 	}
 	public void setColor(Color color)
 	{
@@ -267,7 +259,7 @@ public class MainSceneController
 				{
 					PixelWriter writer=image.getPixelWriter();
 					writer.setColor((int)e.getX(),(int)e.getY(), Color.BLACK);
-				
+
 				}
 			}
 		});
@@ -300,7 +292,7 @@ public class MainSceneController
 		colorMenu.getItems().add(new ColorOption(Color.INDIGO));
 		colorMenu.getItems().add(new ColorOption(Color.web("9400B3")));
 		colorMenu.getItems().add(new ColorOption(Color.BLACK));
-		
+
 
 	}
 	@FXML
@@ -355,7 +347,7 @@ public class MainSceneController
 	@FXML
 	public void addPage()
 	{
-		book.add();
+		book.addPage();
 		setImage();
 		setShowPage();
 	}

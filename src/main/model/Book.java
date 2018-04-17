@@ -14,61 +14,49 @@ import java.util.TreeMap;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
+import javafx.scene.image.Image;
+import reader.MapControl;
 import reader.SimpleConf;
 
 public class Book 
 {
 	public static final int MAXPAGE=1000;
+	private MapControl mc;
 	private int maxPage;
 	private int width;
 	private int height;
-	private int current;
-	private int index;
 	private String filename;
 	public Book(String filename)
 	{
-		if(!Files.exists(Paths.get(filename)))
-		{
-			//int width=Integer.parseInt(JOptionPane.showInputDialog("Width:"));
-			//int height=Integer.parseInt(JOptionPane.showInputDialog("Height:"));
-			//int maxPage=Integer.parseInt(JOptionPane.showInputDialog("MaxPage"));
-			//TODO javafx joptionpanel
-			int width=1200;
-			int height=800;
-			int maxPage=500;
-			int current=0;
-			Map<String,String> def=new TreeMap<String,String>();
-			def.put("width", Integer.toString(width));
-			def.put("height", Integer.toString(height));
-			def.put("maxPage", Integer.toString(maxPage));
-			def.put("current", Integer.toString(current));
-			SimpleConf.write(def, filename);
-		}
-		Map<String,String>data=SimpleConf.read(filename);
-		width=Integer.parseInt(data.get("width"));
-		height=Integer.parseInt(data.get("height"));
-		maxPage=Integer.parseInt(data.get("maxPage"));
-		current=Integer.parseInt(data.get("current"));
+		Map<String,String> defaultMap=new TreeMap<String,String>();
+		defaultMap.put("width", Integer.toString(1200));
+		defaultMap.put("height", Integer.toString(800));
+		defaultMap.put("maxPage", Integer.toString(500));
+		defaultMap.put("current", Integer.toString(0));
+		defaultMap.put("lastOpen", Integer.toString(1));
+		mc=new MapControl(filename,defaultMap);
+		width=Integer.parseInt(mc.read("width"));
+		height=Integer.parseInt(mc.read("height"));
+		maxPage=Integer.parseInt(mc.read("maxPage"));
 		this.filename=filename;
-		index=1;
 		if(!hasPage())
-			generatePage(index);
+			generatePage(getIndex());
 	}
-	public static void main(String[] args)
+	public int getIndex() {return Integer.parseInt(mc.read("lastOpen"));}
+	public void addPage()
 	{
-		Book book=new Book("book.txt");
+		addPage(getIndex());
 	}
-	public void add()
+	private int current() {return Integer.parseInt(mc.read("current"));}
+	public void addPage(int index)
 	{
-		add(index);
-	}
-	public void add(int index)
-	{
-		if(index<1||index>current)
+		if(index<1||index>current())
+			return;
+		else if(current()==maxPage)
 			return;
 		else
 		{
-			for(int i=current;i>=index;i--)
+			for(int i=current();i>=index;i--)
 			{
 				File tempfile=new File(getFile(i));
 				tempfile.renameTo(new File(getFile(i+1)));
@@ -76,33 +64,41 @@ public class Book
 			generatePage(index);
 		}
 	}
+	public boolean setIndex(int index) 
+	{
+		if(index>0&&index<=current())
+		{
+			mc.change("lastOpen", Integer.toString(index));
+			return true;
+		}
+		return false;
+	}
 	public void remove()
 	{
-		remove(index);
-		if(current<index)
-			index--;
+		remove(getIndex());
+		if(current()<getIndex())
+			setIndex(getIndex()-1);
 	}
 	public void remove(int index)
 	{
-		if(index<1||index>current)
+		if(index<1||index>current())
 			return;
 		else
 		{
 			File file=new File(getFile(index));
 			file.delete();
-			for(int i=index+1;i<current+1;i++)
+			for(int i=index+1;i<current()+1;i++)
 			{
 				File tempfile=new File(getFile(i));
 				tempfile.renameTo(new File(getFile(i-1)));
 			}
-			setCurrent(current-1);
+			reduceCurrent();
 		}
 	}
 	public String getFolder()
 	{
 		return Paths.get(filename).toAbsolutePath().getParent().toString();
 	}
-	public int getIndex() {return index;}
 	public int getWidth() {return width;}
 	public int getHeight() {return height;}
 	public boolean hasPage()
@@ -118,28 +114,43 @@ public class Book
 		gr.fillRect(0, 0, width, height);
         try {
 			ImageIO.write(output, "png", new File(getFile(index)));
-			setCurrent(current+1);
+			addCurrent();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	public String getFile()
+	public Image getImage()
+	{
+		Path p=Paths.get(getFile());
+		System.out.println(p.toAbsolutePath().toString());
+		if(!Files.exists(p))
+		{
+			System.out.println("Image source is corrupted");
+			return null;
+		}
+		return new Image(new File(getFile()).toURI().toString());
+	}
+	private String getFile()
+	{
+		return getFolder()+"/page"+getIndex()+".png";
+	}
+	private String getFile(int index)
 	{
 		return getFolder()+"/page"+index+".png";
 	}
-	public String getFile(int index)
+	private void addCurrent()
 	{
-		return getFolder()+"/page"+index+".png";
+		if(current()!=maxPage)
+		{
+			mc.change("current", Integer.toString(current()+1));
+		}
 	}
-	public void setCurrent(int current)
+	private void reduceCurrent()
 	{
-		this.current=current;
-		Map<String,String> def=new TreeMap<String,String>();
-		def.put("width", Integer.toString(width));
-		def.put("height", Integer.toString(height));
-		def.put("maxPage", Integer.toString(maxPage));
-		def.put("current", Integer.toString(current));
-		SimpleConf.write(def, filename);
+		if(current()!=0)
+		{
+			mc.change("current", Integer.toString(current()-1));
+		}
 	}
 	public void saveImage(BufferedImage input)
 	{
@@ -155,44 +166,35 @@ public class Book
 		else
 			return;
 	}
+	public void saveSetting()
+	{
+		mc.write();
+	}
 	public boolean next()
 	{
-		if(index==maxPage)
+		if(getIndex()==maxPage)
 			return false;
 		else
 		{
-			index++;
+			setIndex(getIndex()+1);
 			if(!hasPage())
-				generatePage(index);
+				generatePage(getIndex());
 			return true;
 		}
 	}
 	public boolean previous()
 	{
-		if(index==1)
+		if(getIndex()==1)
 			return false;
 		else
 		{
-			index--;
+			setIndex(getIndex()-1);
 			return true;
 		}
 		
 	}
 	public boolean goTo(int index)
 	{
-		if(index<0||index>maxPage)
-			return false;
-		else
-		{
-			this.index=index;
-			return true;
-		}
+		return setIndex(index);
 	}
-	public int getCurrent() {return current;}
-	@Override
-	protected void finalize() throws Throwable {
-		System.out.println("current: "+current);
-		super.finalize();
-	}
-	
 }

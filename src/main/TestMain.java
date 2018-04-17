@@ -17,14 +17,15 @@ import javafx.stage.Stage;
 import main.view.MainSceneController;
 import reader.SimpleConf;
 
-public class TestMain extends Application {
+public class TestMain extends Application 
+{
+	
 	public static String settingFile="setting.txt";
   @Override // Override the start method in the Application class
   public void start(Stage primaryStage) {
 	  FXMLLoader loader=new FXMLLoader();
 	  loader.setLocation(TestMain.class.getResource("view/MainScene.fxml"));
 	try {
-		
 		Pane pane = (Pane)loader.load();
 		MainSceneController controller=loader.getController();
 		// if no file write one.
@@ -44,7 +45,7 @@ public class TestMain extends Application {
 	    primaryStage.setOnCloseRequest((e)->
 	    {
 	    		writeSetting(controller.getColor());
-	    		controller.saveImage();
+	    		controller.close();
 	    });
 	} catch (IOException e) {
 		// TODO Auto-generated catch block
@@ -53,6 +54,7 @@ public class TestMain extends Application {
   }
   public void writeSetting(Color color)
   {
+	  //TODO change to mapcontrol block
 		Map<String,String> def=new TreeMap<String,String>();
 		def.put("color", color.toString());
 		SimpleConf.write(def, settingFile);
