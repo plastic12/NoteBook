@@ -119,6 +119,10 @@ public class Book
 			e.printStackTrace();
 		}
 	}
+	private void generatePage()
+	{
+		generatePage(current()+1);
+	}
 	public Image getImage()
 	{
 		Path p=Paths.get(getFile());
@@ -176,9 +180,9 @@ public class Book
 			return false;
 		else
 		{
+			if(getIndex()==current())
+				generatePage();
 			setIndex(getIndex()+1);
-			if(!hasPage())
-				generatePage(getIndex());
 			return true;
 		}
 	}

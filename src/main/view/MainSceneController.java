@@ -1,9 +1,6 @@
 package main.view;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 
 import javafx.embed.swing.SwingFXUtils;
@@ -11,18 +8,15 @@ import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Menu;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import main.TestMain;
 import main.model.Book;
 
 public class MainSceneController 
