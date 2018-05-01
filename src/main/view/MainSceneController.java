@@ -30,7 +30,7 @@ public class MainSceneController
 
 	private Book book;
 
-	private ImageView iv;
+	private ImageView[] iv;
 
 	private WritableImage image;
 

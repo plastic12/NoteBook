@@ -33,24 +33,20 @@ public class Book
 		defaultMap.put("height", Integer.toString(800));
 		defaultMap.put("maxPage", Integer.toString(500));
 		defaultMap.put("current", Integer.toString(0));
-		defaultMap.put("lastOpen", Integer.toString(1));
 		mc=new MapControl(filename,defaultMap);
 		width=Integer.parseInt(mc.read("width"));
 		height=Integer.parseInt(mc.read("height"));
 		maxPage=Integer.parseInt(mc.read("maxPage"));
 		this.filename=filename;
-		if(!hasPage())
-			generatePage(getIndex());
 	}
-	public int getIndex() {return Integer.parseInt(mc.read("lastOpen"));}
 	public void addPage()
 	{
-		addPage(getIndex());
+		addPage(current()+1);
 	}
 	private int current() {return Integer.parseInt(mc.read("current"));}
 	public void addPage(int index)
 	{
-		if(index<1||index>current())
+		if(index<1||index>current()+1)
 			return;
 		else if(current()==maxPage)
 			return;
@@ -64,20 +60,9 @@ public class Book
 			generatePage(index);
 		}
 	}
-	public boolean setIndex(int index) 
-	{
-		if(index>0&&index<=current())
-		{
-			mc.change("lastOpen", Integer.toString(index));
-			return true;
-		}
-		return false;
-	}
 	public void remove()
 	{
-		remove(getIndex());
-		if(current()<getIndex())
-			setIndex(getIndex()-1);
+		remove(current());
 	}
 	public void remove(int index)
 	{
@@ -95,15 +80,15 @@ public class Book
 			reduceCurrent();
 		}
 	}
-	public String getFolder()
+	private String getFolder()
 	{
 		return Paths.get(filename).toAbsolutePath().getParent().toString();
 	}
 	public int getWidth() {return width;}
 	public int getHeight() {return height;}
-	public boolean hasPage()
+	public boolean hasPage(int index)
 	{
-		File file=new File(getFile());
+		File file=new File(getFile(index));
 		return file.exists();
 	}
 	private void generatePage(int index)
@@ -112,7 +97,7 @@ public class Book
 		Graphics2D gr=output.createGraphics();
 		gr.setColor(Color.white);
 		gr.fillRect(0, 0, width, height);
-        try {
+		try {
 			ImageIO.write(output, "png", new File(getFile(index)));
 			addCurrent();
 		} catch (IOException e) {
@@ -123,20 +108,15 @@ public class Book
 	{
 		generatePage(current()+1);
 	}
-	public Image getImage()
+	public Image getImage(int index)
 	{
-		Path p=Paths.get(getFile());
-		System.out.println(p.toAbsolutePath().toString());
-		if(!Files.exists(p))
-		{
-			System.out.println("Image source is corrupted");
+		if((index==current()+1))
+			generatePage(index);
+		else  if(index<1||index>current()+1)
 			return null;
-		}
-		return new Image(new File(getFile()).toURI().toString());
-	}
-	private String getFile()
-	{
-		return getFolder()+"/page"+getIndex()+".png";
+		//System.out.println(p.toAbsolutePath().toString());
+		//generatePage(index);
+		return new Image(new File(getFile(index)).toURI().toString());
 	}
 	private String getFile(int index)
 	{
@@ -156,12 +136,13 @@ public class Book
 			mc.change("current", Integer.toString(current()-1));
 		}
 	}
-	public void saveImage(BufferedImage input)
+	private boolean inBound(int index) {return (index>0&&index<=current());}
+	private void saveImage(BufferedImage input,int index)
 	{
-		if(input.getWidth()==width&&input.getHeight()==height)
+		if(inBound(index)&&input.getWidth()==width&&input.getHeight()==height)
 		{
 			try {
-				ImageIO.write(input, "png", new File(getFile()));
+				ImageIO.write(input, "png", new File(getFile(index)));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -174,7 +155,37 @@ public class Book
 	{
 		mc.write();
 	}
-	public boolean next()
+	/*
+	public Image[] getImages()
+	{
+		Image[] output=new Image[getImageCount()];
+		for(int i=0;i<getImageCount();i++)
+		{
+			output[i]=getImage(getIndex()+i);
+		}
+		return output;
+	}
+	*/
+	/*
+	private String getFile()
+	{
+		return getFolder()+"/page"+getIndex()+".png";
+	}
+	*/
+	/*
+	public void saveImages(BufferedImage[] input)
+	{
+		if(input.length==getImageCount())
+		{
+			for(int i=0;i<getImageCount();i++)
+			{
+				saveImage(input[i],getIndex()+i);
+			}
+		}
+	}
+	*/
+	/*
+	private boolean next()
 	{
 		if(getIndex()==maxPage)
 			return false;
@@ -186,7 +197,31 @@ public class Book
 			return true;
 		}
 	}
-	public boolean previous()
+	*/
+	/*
+	public Image[] nextImages()
+	{
+		if(next())
+		{
+			return getImages();
+		}
+		else
+			return null;
+	}
+	*/
+	/*
+	public Image[] previousImages()
+	{
+		if(previous())
+		{
+			return getImages();
+		}
+		else
+			return null;
+	}
+	*/
+	/*
+	private boolean previous()
 	{
 		if(getIndex()==1)
 			return false;
@@ -195,10 +230,12 @@ public class Book
 			setIndex(getIndex()-1);
 			return true;
 		}
-		
 	}
+	*/
+	/*
 	public boolean goTo(int index)
 	{
 		return setIndex(index);
 	}
+	*/
 }
