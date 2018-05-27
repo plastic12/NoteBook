@@ -47,6 +47,8 @@ public class MainSceneController
 	@FXML
 	public void open()
 	{
+		if(book!=null)
+			close();
 		System.out.println("open");
 		String filename=select();
 		if(filename==null)
@@ -65,7 +67,7 @@ public class MainSceneController
 	public void saveImage()
 	{
 		if(book!=null)
-			book.saveImage(SwingFXUtils.fromFXImage(image, null));
+		book.saveImage(SwingFXUtils.fromFXImage(image, null));
 	}
 	public void write(int x,int y)
 	{
@@ -184,8 +186,11 @@ public class MainSceneController
 	@FXML
 	public void close()
 	{
-		saveImage();
-		book.saveSetting();
+		if(book!=null)
+		{
+			saveImage();
+			book.saveSetting();
+		}
 		System.out.println("close");
 		book=null;
 	}
@@ -292,9 +297,9 @@ public class MainSceneController
 	@FXML
 	public void next()
 	{
-		saveImage();
 		if(book!=null)
 		{
+			saveImage();
 			if(book.next())
 			{
 				setImage();
@@ -309,9 +314,9 @@ public class MainSceneController
 	@FXML
 	public void previous()
 	{
-		saveImage();
 		if(book!=null)
 		{
+			saveImage();
 			if(book.previous())
 			{
 				setImage();
